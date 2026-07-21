@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { X, Search, Link2, CheckCircle } from 'lucide-react';
 import apiClient from '../api/client';
+import { authoritiesApi } from '../api/authorities';
 import { useNotificationStore } from '../store/notificationStore';
 
 interface Props {
@@ -35,12 +36,12 @@ export default function LinkAuthorityModal({ open, preselectedUserId, onClose }:
   /* Unlinked authorities */
   const { data: authorities } = useQuery({
     queryKey: ['authorities', 'unlinked', authoritySearch],
-    queryFn:  () =>
-      apiClient.get('/api/authorities').then((r) =>
-        (r.data as any[]).filter((a) =>
-          !a.userId && (!authoritySearch || a.name.toLowerCase().includes(authoritySearch.toLowerCase()))
-        )
-      ),
+    queryFn:  async () => {
+      const res = await authoritiesApi.getAll(1, 100);
+      return res.data.filter((a) =>
+        !a.userId && (!authoritySearch || a.name.toLowerCase().includes(authoritySearch.toLowerCase()))
+      );
+    },
     enabled: open,
   });
 

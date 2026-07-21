@@ -6,7 +6,6 @@ import Button from '../components/Button';
 import { 
   Check, 
   Upload, 
-  ArrowLeft, 
   Camera, 
   Shield, 
   AlertTriangle,

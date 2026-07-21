@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "public_feed": "Public Feed",
+    "map": "Map",
+    "my_reports": "My Reports",
+    "submit_report": "Submit Report",
+    "communities": "Communities",
+    "profile": "Profile",
+    "sos_emergency": "SOS Emergency"
+  },
+  "common": {
+    "logout": "Logout",
+    "citizen_portal": "Citizen Portal"
+  }
+
+
+  ,"feed": {
+    "title": "Public Feed",
+    "subtitle": "Community reports in your area",
+    "submit_report": "+ Submit Report",
+    "search_placeholder": "Search reports...",
+    "filters": "Filters",
+    "located": "Located",
+    "no_reports": "No reports found",
+    "no_reports_desc": "No public reports match your search. Try adjusting your filters.",
+    "general": "General"
+  },
+  "status": {
+    "All": "All",
+    "UnderReview": "Under Review",
+    "Dispatched": "Dispatched",
+    "ReSolved": "Resolved",
+    "Rejected": "Rejected"
+  }
+
+  ,"communities": {
+    "location_not_set": "Location not set",
+    "sos_inactive": "Some SOS emergency features are inactive until you share your location.",
+    "update_location": "Update Location",
+    "title": "My Communities",
+    "subtitle": "Communities you belong to",
+    "joined": "joined",
+    "discover": "Discover",
+    "create": "Create",
+    "no_communities": "You haven't joined any communities yet.",
+    "discover_link": "Discover communities",
+    "leave_title": "Leave Community",
+    "leave_confirm": "Leave",
+    "leave_message": "Leave {{name}}? You can rejoin anytime."
+  },
+  "create_community": {
+    "title": "Create Community",
+    "your_invite_code": "Your invite code",
+    "name": "Name *",
+    "description": "Description",
+    "type": "Type *",
+    "coverage_radius": "Coverage radius (meters)",
+    "creating": "Creating...",
+    "create_btn": "Create Community",
+    "types": {
+      "neighborhood": "Neighborhood",
+      "neighborhood_desc": "Members request to join",
+      "building": "Building",
+      "building_desc": "Invite code required",
+      "private": "Private Group",
+      "private_desc": "Hidden — invite only"
+    }
+  }
+
+  ,"discover_communities": {
+    "title": "Discover Communities",
+    "subtitle": "Browse nearby neighborhoods, search, or join with an invite code",
+    "nearby": "Nearby Communities",
+    "based_on_location": "Based on your profile location",
+    "no_nearby": "No communities found within {{km}}km. Set your location in Profile to see nearby groups.",
+    "search_title": "Search Communities",
+    "search_placeholder": "Search by name…",
+    "filter_all": "All",
+    "filter_neighborhood": "Neighborhood",
+    "filter_building": "Building",
+    "no_results": "No communities found.",
+    "private_notice": "Private groups are invite-only — use an invite code above."
+  },
+  "edit_community": {
+    "title": "Edit Community",
+    "name": "Name *",
+    "description": "Description",
+    "coverage_radius": "Coverage radius (meters)",
+    "saving": "Saving…",
+    "save_btn": "Save Changes",
+    "no_permission": "You don't have permission to edit this community.",
+    "back_link": "Back to community"
+  },
+  "my_reports": {
+    "title": "My Reports",
+    "subtitle": "Track and manage your submitted reports",
+    "new_report": "+ New Report",
+    "stats_total": "Total",
+    "stats_resolved": "Resolved",
+    "stats_pending": "Pending",
+    "stats_rejected": "Rejected",
+    "no_reports_title": "No reports yet",
+    "no_reports_desc": "You haven't submitted any reports. Help your community by reporting issues.",
+    "col_title": "Title",
+    "col_category": "Category",
+    "col_status": "Status",
+    "col_visibility": "Visibility",
+    "col_attachments": "Attachments",
+    "col_submitted": "Submitted",
+    "view": "View",
+    "located": "Located"
+  }
+  ,"map": {
+    "title": "Interactive Map",
+    "subtitle": "Browse public reports in your area"
+  }
+  ,"admin_map": {
+    "title": "Global System Map",
+    "subtitle": "All reports & active SOS"
+  }
+}

@@ -2,12 +2,11 @@ import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
 const apiClient = axios.create({
-  // استخدام الـ URL من الـ env لو موجود، غير كده بيستخدم الديفولت
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://4498-197-54-154-143.ngrok-free.app',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '',
   headers: {
     'Content-Type': 'application/json',
-    'ngrok-skip-browser-warning': '69420' // مهم جداً عشان Ngrok ميوقفش الريكويست
-  }
+    'ngrok-skip-browser-warning': 'true',
+  },
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -19,7 +18,17 @@ apiClient.interceptors.request.use((config) => {
 });
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const ct = String(response.headers['content-type'] ?? '');
+    if (typeof response.data === 'string' && (ct.includes('text/plain') || ct.includes('application/json'))) {
+      try {
+        response.data = JSON.parse(response.data);
+      } catch {
+        /* keep raw string (e.g. invite code) */
+      }
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       useAuthStore.getState().logout();

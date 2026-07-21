@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# AIN (عين) 👁️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**AIN** is a civic reporting and community safety platform that connects **Citizens**, **Authorities**, and **Admins** on a single system — making it easy to report issues, track their resolution, and keep communities safer and better managed.
 
-Currently, two official plugins are available:
+## 🎯 About the Project
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+AIN gives citizens a direct channel to report incidents, hazards, or issues in their community, routes them to the right authority, and lets admins oversee the entire process from a centralized dashboard — all in real time.
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 📍 **Citizen Reporting** – Submit reports with location, description, and media attachments
+- 🏛️ **Authority Dashboard** – Receive, manage, and update the status of reports
+- 🛠️ **Admin Panel** – Full oversight of users, reports, and platform activity
+- 🌐 **Multi-language Support** – Fully localized (Arabic / English) using i18n
+- 📱 **Mobile App** – Native experience via Flutter
+- 🤖 **AI-powered Insights** – Smart classification and analysis of reports
 
-## Expanding the ESLint configuration
+## 🏗️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| Layer | Technology |
+|---|---|
+| Web Frontend | React.js, Redux Toolkit, i18n |
+| Mobile | Flutter |
+| Backend | REST API |
+| AI | Report classification & analysis |
+| Design | Figma |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 👥 Team
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Built by a 6-member team covering:
+- Frontend Web Development
+- Mobile Development (Flutter)
+- UI/UX Design
+- Backend Development
+- AI/ML
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/ain-platform.git
+
+# Navigate to the project
+cd ain-platform
+
+# Install dependencies
+npm install
+
+# Run the development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📸 Screenshots
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+_Coming soon_
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📄 License
+
+This project was developed as a graduation project.
+
+## 📬 Contact
+
+For questions or feedback, feel free to reach out or open an issue.

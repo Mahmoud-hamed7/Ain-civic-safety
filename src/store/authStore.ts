@@ -1,23 +1,13 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import {type User } from '../types';
-
-// فانكشن آمنة لفك تشفير الـ JWT عشان متضربش Error
-const decodeToken = (token: string): any => {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    return null;
-  }
-};
+import { type User } from '../types';
+import {
+  decodeJwtPayload,
+  extractDisplayName,
+  extractEmail,
+  extractRole,
+  extractUserId,
+} from '../utils/jwtClaims';
 
 interface AuthStore {
   token: string | null;
@@ -33,6 +23,23 @@ interface AuthStore {
   isRole: (...roles: string[]) => boolean;
 }
 
+function userFromToken(apiUser: any, token: string): User | null {
+  const decoded = decodeJwtPayload(token);
+  if (!decoded) return null;
+
+  const id = extractUserId(decoded);
+  if (!id) return null;
+
+  return {
+    id,
+    displayName: apiUser?.displayName || extractDisplayName(decoded),
+    email: apiUser?.email || extractEmail(decoded),
+    role: extractRole(decoded),
+    token,
+    authorityId: decoded.authorityId as string | undefined,
+  };
+}
+
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set, get) => ({
@@ -41,30 +48,14 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       isAuthenticated: false,
 
-      // حفظ توكن التسجيل المؤقت
       setSignupToken: (signupToken) => set({ signupToken }),
 
-      // الفانكشن اللي بتشتغل بعد اللوجين أو بعد آخر خطوة في التسجيل
       setAuth: (apiUser, token) => {
-        const decoded = decodeToken(token);
-        if (!decoded) return;
-
-        // استخراج الرول (سواء كان مكتوب role أو بالرابط الطويل بتاع .NET)
-        const userRole = decoded.role || decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 'Citizen';
-
-        const user: User = {
-          id: decoded.sub || decoded.nameidentifier || '',
-          displayName: apiUser?.displayName || decoded.given_name || decoded.name || 'User',
-          email: apiUser?.email || decoded.email || '',
-          role: userRole,
-          token: token,
-          authorityId: decoded.authorityId
-        };
-
+        const user = userFromToken(apiUser, token);
+        if (!user) return;
         set({ token, user, isAuthenticated: true, signupToken: null });
       },
 
-      // للتوافق لو حبيت تستخدم login وتبعث التوكن بس
       login: (token: string) => {
         get().setAuth(null, token);
       },
@@ -86,7 +77,20 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'ain-auth-storage', // الاسم اللي هيتحفظ بيه في الـ Local Storage
-    }
-  )
+      name: 'ain-auth-storage',
+      onRehydrateStorage: () => (state) => {
+        if (!state?.token || !state.user) return;
+        if (state.user.id?.trim()) return;
+        const user = userFromToken(state.user, state.token);
+        if (user) state.user = user;
+      },
+    },
+  ),
 );
+
+/** Resolved user id — prefers store, falls back to decoding the JWT. */
+export function useAuthUserId(): string {
+  const userId = useAuthStore((s) => s.user?.id);
+  const token = useAuthStore((s) => s.token);
+  return userId?.trim() || extractUserId(decodeJwtPayload(token ?? '') ?? {}) || '';
+}

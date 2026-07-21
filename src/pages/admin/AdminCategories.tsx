@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { Plus, Pencil, Trash2, ChevronRight, Tag } from 'lucide-react';
 import apiClient from '../../api/client';
 import Skeleton from '../../components/Skeleton';
@@ -14,29 +15,33 @@ function SpecModal({
 }: {
   open: boolean; spec: Specialization | null; categoryId: string; onClose: () => void; onSave: (d: any) => void;
 }) {
+  const { t } = useTranslation();
   const [form, setForm] = useState(
     spec ? { name: spec.name, description: spec.description ?? '', iconName: spec.iconName ?? '' }
          : { name: '', description: '', iconName: '' }
   );
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 text-start">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl w-full max-w-sm p-6">
-        <h3 className="text-base font-bold text-white mb-4">{spec ? 'Edit Specialization' : 'Add Specialization'}</h3>
+        <h3 className="text-base font-bold text-white mb-4">{spec ? t('admin_categories.edit', 'Edit Specialization') : t('admin_categories.add', 'Add Specialization')}</h3>
         {(['name', 'iconName', 'description'] as const).map((f) => (
           <div key={f} className="mb-3">
-            <label className="block text-xs font-semibold text-gray-400 mb-1 capitalize">{f === 'iconName' ? 'Icon Name' : f}{f === 'name' ? ' *' : ''}</label>
+            <label className="block text-xs font-semibold text-gray-400 mb-1 capitalize">
+              {f === 'iconName' ? t('admin_categories.icon_name', 'Icon Name') : t(`admin_categories.${f}`, f)}
+              {f === 'name' ? ' *' : ''}
+            </label>
             <input value={form[f]} onChange={(e) => setForm((s) => ({ ...s, [f]: e.target.value }))}
               placeholder={f === 'iconName' ? 'e.g. shield, fire…' : ''}
-              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-indigo-500" />
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-indigo-500 text-start" />
           </div>
         ))}
         <div className="flex justify-end gap-3 mt-4">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-300 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-300 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">{t('admin_categories.cancel', 'Cancel')}</button>
           <button disabled={!form.name.trim()} onClick={() => onSave({ ...form, categoryId })}
             className="px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-40">
-            {spec ? 'Save' : 'Add'}
+            {spec ? t('admin_categories.save', 'Save') : t('admin_categories.add', 'Add')}
           </button>
         </div>
       </div>
@@ -45,6 +50,8 @@ function SpecModal({
 }
 
 export default function AdminCategories() {
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language.startsWith('ar');
   const qc = useQueryClient();
   const addToast = useNotificationStore((s) => s.addToast);
 
@@ -82,14 +89,14 @@ export default function AdminCategories() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto flex flex-col md:flex-row gap-6 min-h-[calc(100vh-64px)]">
+    <div className="p-6 max-w-7xl mx-auto flex flex-col md:flex-row gap-6 min-h-[calc(100vh-64px)] text-start">
       {/* ── Left: Category list ── */}
       <div className="w-full md:w-72 shrink-0 bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden flex flex-col">
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800">
-          <h2 className="text-sm font-bold text-white">Categories</h2>
+          <h2 className="text-sm font-bold text-white">{t('admin_categories.title', 'Categories')}</h2>
           <button onClick={() => openCatForm(null)}
             className="flex items-center gap-1 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
-            <Plus className="w-3.5 h-3.5" /> New
+            <Plus className="w-3.5 h-3.5" /> {t('admin_categories.new', 'New')}
           </button>
         </div>
 
@@ -101,7 +108,7 @@ export default function AdminCategories() {
               <li key={cat.id}>
                 <button
                   onClick={() => setSelected(cat)}
-                  className={`w-full flex items-center justify-between px-4 py-3 text-left text-sm transition-colors ${selected?.id === cat.id ? 'bg-indigo-600/15 text-white' : 'text-gray-300 hover:bg-gray-800'}`}
+                  className={`w-full flex items-center justify-between px-4 py-3 text-start text-sm transition-colors ${selected?.id === cat.id ? 'bg-indigo-600/15 text-white' : 'text-gray-300 hover:bg-gray-800'}`}
                 >
                   <div className="flex items-center gap-2 min-w-0">
                     <Tag className="w-3.5 h-3.5 text-gray-500 shrink-0" />
@@ -110,13 +117,13 @@ export default function AdminCategories() {
                   <div className="flex items-center gap-1 shrink-0">
                     <button onClick={(e) => { e.stopPropagation(); openCatForm(cat); }} className="p-1 text-gray-600 hover:text-indigo-400 transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
                     <button onClick={(e) => { e.stopPropagation(); setDeleteCat({ open: true, id: cat.id, name: cat.name }); }} className="p-1 text-gray-600 hover:text-red-400 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
-                    <ChevronRight className={`w-3.5 h-3.5 text-gray-600 transition-transform ${selected?.id === cat.id ? 'rotate-90 text-indigo-400' : ''}`} />
+                    <ChevronRight className={`w-3.5 h-3.5 text-gray-600 transition-transform ${selected?.id === cat.id ? 'rotate-90 text-indigo-400' : ''} ${isRtl && selected?.id !== cat.id ? 'rotate-180' : isRtl && selected?.id === cat.id ? '-rotate-90' : selected?.id === cat.id ? 'rotate-90' : ''}`} />
                   </div>
                 </button>
               </li>
             ))}
             {!loadingCats && categories?.length === 0 && (
-              <p className="text-center py-8 text-gray-500 text-xs">No categories yet.</p>
+              <p className="text-center py-8 text-gray-500 text-xs">{t('admin_categories.no_categories', 'No categories yet.')}</p>
             )}
           </ul>
         )}
@@ -128,33 +135,31 @@ export default function AdminCategories() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <Tag className="w-10 h-10 text-gray-700 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">Select a category to view details</p>
+              <p className="text-gray-500 text-sm">{t('admin_categories.select_category', 'Select a category to view details')}</p>
             </div>
           </div>
         ) : (
           <>
-            {/* Category header */}
             <div className="px-6 py-4 border-b border-gray-800">
               <div className="flex items-start justify-between gap-4">
-                <div>
+                <div className="text-start">
                   <h2 className="text-lg font-bold text-white">{selected.name}</h2>
                   {selected.description && <p className="text-sm text-gray-400 mt-0.5">{selected.description}</p>}
                   {selected.iconName && <p className="text-xs text-gray-600 mt-1">Icon: {selected.iconName}</p>}
                 </div>
                 <button onClick={() => openCatForm(selected)}
                   className="flex items-center gap-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 bg-indigo-400/10 border border-indigo-400/20 px-3 py-1.5 rounded-lg transition-colors">
-                  <Pencil className="w-3.5 h-3.5" /> Edit
+                  <Pencil className="w-3.5 h-3.5" /> {t('admin_categories.edit', 'Edit')}
                 </button>
               </div>
             </div>
 
-            {/* Specializations */}
             <div className="flex-1 overflow-y-auto p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-bold text-white">Specializations</h3>
+                <h3 className="text-sm font-bold text-white">{t('admin_categories.specializations', 'Specializations')}</h3>
                 <button onClick={() => setSpecModal({ open: true, spec: null })}
                   className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-400/10 border border-emerald-400/20 px-3 py-1.5 rounded-lg transition-colors">
-                  <Plus className="w-3.5 h-3.5" /> Add
+                  <Plus className="w-3.5 h-3.5" /> {t('admin_categories.add', 'Add')}
                 </button>
               </div>
 
@@ -164,11 +169,11 @@ export default function AdminCategories() {
                 <div className="space-y-2">
                   {(specs ?? []).map((s) => (
                     <div key={s.id} className="flex items-center justify-between px-4 py-3 bg-gray-800/60 border border-gray-700/50 rounded-xl">
-                      <div>
+                      <div className="text-start min-w-0 flex-1">
                         <p className="text-sm font-medium text-white">{s.name}</p>
                         {s.description && <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">{s.description}</p>}
                       </div>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 shrink-0 ms-4">
                         <button onClick={() => setSpecModal({ open: true, spec: s })} className="p-1.5 text-gray-500 hover:text-indigo-400 hover:bg-indigo-400/10 rounded-lg transition-colors"><Pencil className="w-4 h-4" /></button>
                         <button onClick={() => setDeleteSpec({ open: true, id: s.id, name: s.name })} className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"><Trash2 className="w-4 h-4" /></button>
                       </div>
@@ -186,21 +191,23 @@ export default function AdminCategories() {
         )}
       </div>
 
-      {/* ── Category form modal ── */}
       {catForm.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 text-start">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setCatForm({ open: false, cat: null })} />
           <div className="relative bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl w-full max-w-sm p-6">
-            <h3 className="text-base font-bold text-white mb-4">{catForm.cat ? 'Edit Category' : 'New Category'}</h3>
+            <h3 className="text-base font-bold text-white mb-4">{catForm.cat ? t('admin_categories.edit', 'Edit Category') : t('admin_categories.new', 'New Category')}</h3>
             {(['name', 'iconName', 'description'] as const).map((f) => (
               <div key={f} className="mb-3">
-                <label className="block text-xs font-semibold text-gray-400 mb-1 capitalize">{f === 'iconName' ? 'Icon Name' : f}{f === 'name' ? ' *' : ''}</label>
+                <label className="block text-xs font-semibold text-gray-400 mb-1 capitalize">
+                  {f === 'iconName' ? t('admin_categories.icon_name', 'Icon Name') : t(`admin_categories.${f}`, f)}
+                  {f === 'name' ? ' *' : ''}
+                </label>
                 <input value={catFormData[f]} onChange={(e) => setCatFormData((s) => ({ ...s, [f]: e.target.value }))}
-                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-indigo-500" />
+                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:border-indigo-500 text-start" />
               </div>
             ))}
             <div className="flex justify-end gap-3 mt-4">
-              <button onClick={() => setCatForm({ open: false, cat: null })} className="px-4 py-2 text-sm text-gray-300 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Cancel</button>
+              <button onClick={() => setCatForm({ open: false, cat: null })} className="px-4 py-2 text-sm text-gray-300 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">{t('admin_categories.cancel', 'Cancel')}</button>
               <button disabled={!catFormData.name.trim()}
                 onClick={() => {
                   const fn = catForm.cat
@@ -209,7 +216,7 @@ export default function AdminCategories() {
                   mutateCat(fn, catForm.cat ? 'Category updated.' : 'Category created.', [['categories']]);
                 }}
                 className="px-4 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors disabled:opacity-40">
-                {catForm.cat ? 'Save' : 'Create'}
+                {catForm.cat ? t('admin_categories.save', 'Save') : t('admin_categories.create', 'Create')}
               </button>
             </div>
           </div>
